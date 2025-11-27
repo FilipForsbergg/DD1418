@@ -81,6 +81,7 @@ class RandomIndexing(object):
         """
 
         # REPLACE THE STATEMENT BELOW WITH YOUR CODE
+        context_index_span = range( max(0, i - self.left_window_size),)
 
         return []
 
@@ -135,6 +136,28 @@ class RandomIndexing(object):
         """
         
         # YOUR CODE HERE
+        cols = self.dimension
+        rows = len(self.id2word) # en rad per ord i varje matris
+
+        self.rv = np.zeros(shape=(rows,cols), dtype=int)
+        self.cv = np.zeros(shape=(rows,cols), dtype=int)
+
+        #random vectors
+        for word_id in range(len(self.id2word) - 1):
+            random_vector = np.zeros(self.dimension, dtype=int)
+            
+            #pick n positions
+            non_zero_positions = np.random.choice(a=self.dimension, size=self.non_zero, replace=False)
+
+            for position in non_zero_positions:
+                non_zero_value = np.random.choice(self.non_zero_values, 1)[0] #1 or -1
+                random_vector[position] = non_zero_value
+        
+            #add it to the current row in the matrix
+            self.rv[word_id] = random_vector # size = (25203 , 2000)
+
+        print("Created random vectors")
+            
 
         
 
@@ -163,7 +186,7 @@ class RandomIndexing(object):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Random Indexing word embeddings')
-    parser.add_argument('--file', '-f', type=str,  default='../RandomIndexing/data', help='The files used in the training.')
+    parser.add_argument('--file', '-f', type=str,  default='../a05/data', help='The files used in the training.')
     parser.add_argument('--left_window_size', '-lws', type=int, default='2', help='Left context window size')
     parser.add_argument('--right_window_size', '-rws', type=int, default='2', help='Right context window size')
     parser.add_argument('--dimension', '-d', type=int, default=2000, help='Dimensionality of word vectors')
