@@ -79,13 +79,22 @@ class RandomIndexing(object):
         :param      i:     Index of the focus word in the list of tokens
         :type       i:     int
         """
-
         # REPLACE THE STATEMENT BELOW WITH YOUR CODE
-        context_index_span = range( max(0, i - self.left_window_size),)
+        nr_of_words = len(self.tokens)
+        left = max(0, i - self.left_window_size)
+        right = min(nr_of_words, i + self.right_window_size + 1)
+        context_index_span = range(left, right) # NOT the same as the ids for word
+       
+        ids_to_return = []
+        for idx in context_index_span:
+            if idx == i: # we dont want the focus word itself
+                continue
+            word = self.tokens[idx]
+            word_id = self.get_word_id(word)
+            ids_to_return.append(word_id)
 
-        return []
-
-
+        
+        return ids_to_return
 
     def process_files( self, file_or_dir ) :
         """
@@ -139,12 +148,12 @@ class RandomIndexing(object):
         cols = self.dimension
         rows = len(self.id2word) # en rad per ord i varje matris
 
-        self.rv = np.zeros(shape=(rows,cols), dtype=int)
-        self.cv = np.zeros(shape=(rows,cols), dtype=int)
+        self.rv = np.zeros(shape=(rows,cols))
+        self.cv = np.zeros(shape=(rows,cols))
 
         #random vectors
-        for word_id in range(len(self.id2word) - 1):
-            random_vector = np.zeros(self.dimension, dtype=int)
+        for word_id in range(len(self.id2word)):
+            random_vector = np.zeros(self.dimension)
             
             #pick n positions
             non_zero_positions = np.random.choice(a=self.dimension, size=self.non_zero, replace=False)
@@ -157,17 +166,25 @@ class RandomIndexing(object):
             self.rv[word_id] = random_vector # size = (25203 , 2000)
 
         print("Created random vectors")
-            
 
+        #context vectors
+        for data_point in self.datapoints:
+            focus_id, context_ids = data_point
+
+            #update the context vector with the sum of the random vectors of the context words
+            self.cv[focus_id] += np.sum(self.rv[context_ids], axis=0)
+
+        print("Created context vectors")
         
-
     def normalize_word_vectors(self):
         """
         Normalizes all word vectors to unit vectors (of Euclidean length 1)
         """
        
         # YOUR CODE HERE
-                
+        for i in range(len(self.cv)):
+            norm = linalg.norm(self.cv[i])
+            self.cv[i] = self.cv[i] / norm if norm > 0 else self.cv[i]
 
         
     def write_word_vectors_to_file( self, filename ) :
