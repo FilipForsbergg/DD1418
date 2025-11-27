@@ -71,8 +71,26 @@ class VectorTester:
         """
 
         # REPLACE THE STATEMENT BELOW WITH YOUR CODE
- 
-        return []
+        query_vectors = np.zeros(shape=(len(words), self.dimension))
+        for i, word in enumerate(words):            
+            word_id = self.word2id[word]
+            query_vectors[i] = self.vector[word_id]
+        
+        neighbours = NearestNeighbors(n_neighbors=k, metric=metric).fit(self.vector) 
+        distance, indices = neighbours.kneighbors(query_vectors)
+
+        all_neighbours = []
+        for i in range(len(words)):
+            neighbours_i = []
+            for j in range(k):
+                id = indices[i][j]
+                neighbour_word = self.id2word[id]
+                dist = distance[i][j]
+                dist = round(float(dist),2)
+                neighbours_i.append((neighbour_word, dist))
+            all_neighbours.append(neighbours_i)
+        
+        return all_neighbours
 
 
 
@@ -96,7 +114,7 @@ def main() :
     os.environ['OMP_NUM_THREADS'] = '1'
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='Vector tester')
-    parser.add_argument('--file', '-f', type=str,  required=True, help='The files used in the training.')
+    parser.add_argument('--file', '-f', type=str, default='a05/vectors.txt', required=False, help='The files used in the training.')
 
     arguments = parser.parse_args()  
 
