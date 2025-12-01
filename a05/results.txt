@@ -1,0 +1,53 @@
+Olika dimensions:
+
+d=10, nz = 1
+[('harry', 0.0), ('percy', 0.0097), ('griphook', 0.0116), ('neville', 0.0127), ('fudge', 0.0141)]
+
+d=100, nz = 10
+[('harry', 0.0), ('percy', 0.0198), ('hagrid', 0.0204), ('fudge', 0.0259), ('neville', 0.031)]
+
+d = 2000, nz = 100
+[('harry', 0.0), ('percy', 0.02), ('hagrid', 0.02), ('neville', 0.03), ('snape', 0.03)]
+
+------------------------------------------------------------------------------------------------------------------------
+Olika % nz element (d=2000)
+
+nz = 5% = 100
+Neighbors for harry: [('harry', 0.0), ('percy', 0.0213), ('hagrid', 0.0226), ('neville', 0.03), ('dumbledore', 0.032)]
+
+nz = 50% = 1000
+[('harry', 0.0), ('percy', 0.0205), ('hagrid', 0.0222), ('neville', 0.0288), ('snape', 0.0289)]
+
+nz = 80% = 1600
+Neighbors for harry: [('harry', 0.0), ('percy', 0.0206), ('hagrid', 0.0212), ('neville', 0.0263), ('snape', 0.0295)]
+
+-----------------------------------------------------------------------------------------------------------------------
+Olika fönster-size (d=2000)
+
+höger=vänster=0
+[('dexter', 1.0), ('ear-trumpet', 1.0), ('niggelus', 1.0), ('balm', 1.0), ('sleep-deprived', 1.0)]
+
+höger=vänster=3
+[('harry', 0.0), ('hagrid', 0.0167), ('dumbledore', 0.0183), ('neville', 0.0197), ('snape', 0.0211)]
+
+höger=vänster=10
+Neighbors for harry: [('harry', 0.0), ('snape', 0.0087), ('malfoy', 0.0101), ('dumbledore', 0.0111), ('moody', 0.0113)]
+
+-----------------------------------------------------------------------------------------------------------------------
+Cosine vs Euclidian (resten default)
+
+Cosine
+[('harry', 0.0), ('percy', 0.0212), ('hagrid', 0.0218), ('neville', 0.028), ('snape', 0.0302)]
+
+Euclidian
+[('harry', 0.0), ('he', 53709.9587), ('it', 79902.3371), ('i', 83640.5487), ('ron', 85062.2452)] //Stora värden, vanligt förekommande ord blir grannar?
+-----------------------------------------------------------------------------------------------------------------------
+Cosine vs Euclidian (med normalisering)
+
+Cosine
+[('harry', 0.0), ('percy', 0.0205), ('hagrid', 0.0209), ('neville', 0.0274), ('snape', 0.0302)]
+
+Euclidian
+[('harry', 0.0), ('percy', 0.2027), ('hagrid', 0.2046), ('neville', 0.2343), ('snape', 0.2457)] //Mer likt cosine när vi normaliserar
+
+

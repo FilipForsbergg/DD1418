@@ -152,15 +152,30 @@ class RandomIndexing(object):
         self.cv = np.zeros(shape=(rows,cols))
 
         #random vectors
-        for word_id in range(len(self.id2word)):
+        for word_id in tqdm(range(len(self.id2word)), desc="Random vectors"):
             random_vector = np.zeros(self.dimension)
-            
-            #pick n positions
-            non_zero_positions = np.random.choice(a=self.dimension, size=self.non_zero, replace=False)
 
-            for position in non_zero_positions:
-                non_zero_value = np.random.choice(self.non_zero_values, 1)[0] #1 or -1
-                random_vector[position] = non_zero_value
+            #pick n positions
+            non_zero_positions = np.random.choice(
+                a=self.dimension,
+                size=self.non_zero,
+                replace=False
+            )
+            #-1 or 1
+            non_zero_values = np.random.choice( 
+                self.non_zero_values,
+                size=self.non_zero,
+                replace=True
+            )
+
+            random_vector[non_zero_positions] = non_zero_values
+
+            #pick n positions
+            #non_zero_positions = np.random.choice(a=self.dimension, size=self.non_zero, replace=False)
+#
+            #for position in non_zero_positions:
+            #    non_zero_value = np.random.choice(self.non_zero_values, 1)[0] #1 or -1
+            #    random_vector[position] = non_zero_value
         
             #add it to the current row in the matrix
             self.rv[word_id] = random_vector # size = (25203 , 2000)
@@ -168,7 +183,7 @@ class RandomIndexing(object):
         print("Created random vectors")
 
         #context vectors
-        for data_point in self.datapoints:
+        for data_point in tqdm(self.datapoints, desc="Context vectors"):
             focus_id, context_ids = data_point
 
             #update the context vector with the sum of the random vectors of the context words
@@ -193,7 +208,7 @@ class RandomIndexing(object):
         export and use in another application.
         """
         with open(filename, 'w', encoding='utf8') as f:
-            for idx in range(len(self.id2word)) :
+            for idx in tqdm(range(len(self.id2word)), desc="Saving to file") :
                 f.write('{} '.format( self.id2word[idx] ))
                 for i in self.cv[idx] :
                     f.write('{} '.format( i ))

@@ -86,7 +86,7 @@ class VectorTester:
                 id = indices[i][j]
                 neighbour_word = self.id2word[id]
                 dist = distance[i][j]
-                dist = round(float(dist),2)
+                dist = round(float(dist),4)
                 neighbours_i.append((neighbour_word, dist))
             all_neighbours.append(neighbours_i)
         
@@ -114,14 +114,13 @@ def main() :
     os.environ['OMP_NUM_THREADS'] = '1'
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='Vector tester')
-    parser.add_argument('--file', '-f', type=str, default='a05/vectors.txt', required=False, help='The files used in the training.')
+    parser.add_argument('--file', '-f', type=str, default='vectors.txt', required=False, help='The files used in the training.')
 
     arguments = parser.parse_args()  
 
     vt = VectorTester()
     vt.read_vectors( arguments.file )
     vt.interact()
-
 
         
 if __name__ == '__main__' :
